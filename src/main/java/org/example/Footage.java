@@ -1,13 +1,14 @@
 package org.example;
 
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
 import java.util.Date;
 public class Footage {
     private final String title;
-    private final Date date;
+    private final LocalDate date;
     private final Integer duration;
 
-    public Footage(String title, Date date, Integer duration) {
+    public Footage(String title, LocalDate date, Integer duration) {
         this.title = title;
         this.date = date;
         this.duration = duration;
@@ -16,7 +17,7 @@ public class Footage {
     public String getTitle() {
         return title;
     }
-    public Date getDate() { return date; }
+    public LocalDate getDate() { return date; }
     public Integer getDuration() {
         return duration;
     }
