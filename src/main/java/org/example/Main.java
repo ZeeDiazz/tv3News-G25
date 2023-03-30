@@ -1,5 +1,6 @@
 package org.example;
 
+import javax.xml.crypto.Data;
 import java.io.*;
 import java.sql.*;
 import java.util.ArrayList;
@@ -10,13 +11,22 @@ public class Main {
     public static void main(String[] args) {
         String host = "localhost";
         String port = "3306";
-        String database = "tv3NewsDB";
+        String databaseName = "tv3NewsDB";
         String cp = "utf8";
         // Set username and password.
         String username = "root";
         String password = "Mypassword01";
 
-        String url = "jdbc:mysql://" + host + ":" + port + "/" + database + "?characterEncoding=" + cp;
+        Database database;
+
+        try {
+            database.login(host, port, username, password, databaseName);
+        }
+        catch (SQLException e) {
+            // TODO
+        }
+
+        String url = "jdbc:mysql://" + host + ":" + port + "/" + databaseName + "?characterEncoding=" + cp;
         try {
             // Get a connection.
             Connection connection = DriverManager.getConnection(url, username, password);

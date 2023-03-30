@@ -1,8 +1,14 @@
 package org.example;
 
+import java.sql.ResultSet;
+import java.sql.SQLException;
+
 public interface Database {
-    void login(String host, String port, String username, String password, String database);
-    void login(String host, String port, String username, String password, String database, String characterEncoding);
+    void login(String host, String port, String username, String password, String databaseName) throws SQLException;
+    void login(String host, String port, String username, String password, String databaseName, String characterEncoding) throws SQLException;
+
+    ResultSet executeQuery(String query) throws SQLException;
+    ResultSet executeSanitisedQuery(String query) throws SQLException;
 
     boolean reporterExists(Reporter reporter);
     Reporter getReporter(String cpr);
