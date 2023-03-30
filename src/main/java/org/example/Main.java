@@ -2,6 +2,7 @@ package org.example;
 
 import java.io.*;
 import java.sql.*;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
@@ -21,7 +22,7 @@ public class Main {
             Connection connection = DriverManager.getConnection(url, username, password);
 
             Scanner scan = new Scanner(System.in, "CP850");
-            System.out.println("To Insert press 1, To Query press 2");
+            System.out.println("To Insert press 1, To Query press 2, To Load File press 3");
             int Options = scan.nextInt();
             scan.nextLine();
 
@@ -60,9 +61,20 @@ public class Main {
                                 System.out.print("null; ");
                             } else {
                                 System.out.print(resultSet.getString(i)+"; ");
-                            };
+                            }
                         }
                         System.out.println();
+                    }
+                    break;
+                case 3:
+                    System.out.println("Enter filename:");
+                    String filename = scan.nextLine();
+                    FootagesAndReportersLoader loader = new FootagesAndReportersLoader();
+                    try {
+                        List<FootageAndReporter> footagesAndReporters = loader.loadFootagesAndReporters(filename);
+                    }
+                    catch (IOException e) {
+                        // ignored
                     }
                     break;
                 default:
@@ -75,16 +87,4 @@ public class Main {
             e.printStackTrace();
         }
     }
-
-    public static void readFromCSV(String filename) {
-        try {
-            FootagesAndReportersLoader loader = new FootagesAndReportersLoader();
-            List<FootageAndReporter> footagesAndReporters = loader.loadFootagesAndReporters(filename);
-
-        }
-        catch (IOException fileNotFoundException) {
-
-        }
-    }
-
 }
