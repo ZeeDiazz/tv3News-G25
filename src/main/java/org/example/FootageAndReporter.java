@@ -2,6 +2,7 @@ package org.example;
 
 
 import java.time.LocalDate;
+import java.util.Date;
 
 public class FootageAndReporter {
     private final Reporter reporter;

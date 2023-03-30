@@ -6,6 +6,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -40,12 +41,12 @@ public class FootagesAndReportersLoader {
                         continue;
                     if(values.size() == NUMBER_OF_FIELDS_EXPECTED) {
                         String title = values.get(0);
-                        Date date = null;
-                        try {
+                        LocalDate date = null;
+                        /*try {
                             date = dateParser.parse(values.get(1));
                         } catch (ParseException e) {
                             throw new NumberFormatException("Invalid value (" + values.get(1) + ") for date at line " + lineNbr);
-                        }
+                        }*/
                         Integer duration = Integer.valueOf(values.get(2));
                         Integer cpr = Integer.valueOf(values.get(3));
                         String firstName = values.get(4);

@@ -2,7 +2,7 @@ package org.example;
 
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
-import java.util.Date;
+
 public class Footage {
     private final String title;
     private final LocalDate date;
