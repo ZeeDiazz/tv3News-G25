@@ -27,7 +27,7 @@ public class Footage {
         final String D = ";";
         final SimpleDateFormat dateFormatter = new SimpleDateFormat("yyyyMMdd");
 
-        return getTitle() +D + dateFormatter.format(getDate()) +D + getDuration();
+        return getTitle() + D + getDate().toString() + D + getDuration();
     }
 
 }

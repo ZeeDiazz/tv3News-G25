@@ -2,6 +2,7 @@ package org.example;
 
 import java.io.*;
 import java.sql.*;
+import java.util.List;
 import java.util.Scanner;
 
 public class Main {
@@ -76,10 +77,11 @@ public class Main {
     }
 
     public static void readFromCSV(String filename) {
-        try (BufferedReader reader = new BufferedReader(new FileReader(filename))) {
+        try {
+            FootagesAndReportersLoader loader = new FootagesAndReportersLoader();
+            List<FootageAndReporter> footagesAndReporters = loader.loadFootagesAndReporters(filename);
 
         }
-
         catch (IOException fileNotFoundException) {
 
         }

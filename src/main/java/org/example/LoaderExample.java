@@ -5,6 +5,9 @@ import java.util.List;
 public class LoaderExample {
 
     public static void main(String[] args) {
+        args = new String[1];
+        args[0] = "/home/daniel/Programming/Java/tv3News-G25/src/main/java/uploads.csv";
+
         FootagesAndReportersLoader loader = new FootagesAndReportersLoader();
         try {
             System.out.println("loading from "+args[0]);
