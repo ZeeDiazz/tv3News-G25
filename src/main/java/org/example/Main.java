@@ -69,6 +69,10 @@ public class Main {
                 case 3:
                     System.out.println("Enter filename:");
                     String filename = scan.nextLine();
+                    if (!filename.endsWith(".csv")) {
+                        filename += ".csv";
+                    }
+                    filename = "src/main/resources/" + filename;
                     FootagesAndReportersLoader loader = new FootagesAndReportersLoader();
                     try {
                         List<FootageAndReporter> footagesAndReporters = loader.loadFootagesAndReporters(filename);
