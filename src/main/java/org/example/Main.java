@@ -1,8 +1,6 @@
 package org.example;
 
-import java.io.BufferedReader;
-import java.io.FileReader;
-import java.io.InputStreamReader;
+import java.io.*;
 import java.sql.*;
 import java.util.Scanner;
 
@@ -77,18 +75,14 @@ public class Main {
         }
     }
 
-    public static void readFromCSV(String filename){
-
-
-        try (BufferedReader reader = new BufferedReader(new InputStreamReader(System.in))) {
-
+    public static void readFromCSV(String filename) {
+        try (BufferedReader reader = new BufferedReader(new FileReader(filename))) {
 
         }
 
-        catch (Exception e){
+        catch (IOException fileNotFoundException) {
 
         }
-
     }
 
 }
