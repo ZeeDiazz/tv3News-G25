@@ -7,6 +7,8 @@ public interface Database {
     void login(String host, String port, String username, String password, String databaseName) throws SQLException;
     void login(String host, String port, String username, String password, String databaseName, String characterEncoding) throws SQLException;
 
+    void closeStatement() throws SQLException;
+
     ResultSet executeQuery(String query) throws SQLException;
     ResultSet executeSanitisedQuery(String query) throws SQLException;
     void executeUpdate(String sql) throws SQLException;

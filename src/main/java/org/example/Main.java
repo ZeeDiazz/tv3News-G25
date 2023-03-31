@@ -18,6 +18,26 @@ public class Main {
         String password = "Mypassword01";
 
         Scanner scan = new Scanner(System.in, "CP850");
+
+        /*
+        String url = "jdbc:mysql://" + host + ":" + port + "/" + databaseName + "?characterEncoding=utf8";
+        try {
+            Connection connection = DriverManager.getConnection(url, username, password);
+            Statement statement = connection.createStatement();
+
+            System.out.println("Insert values in tables:");
+            String SQLInsertion = scan.nextLine();
+            statement.executeUpdate(SQLInsertion);
+        }
+        catch (SQLException e) {
+            System.out.println("Waddafuck");
+        }
+
+
+        if (true)
+        return;
+        */
+
         Database database = new Tv3Database();
 
         try {
@@ -118,7 +138,15 @@ public class Main {
                                 System.out.println("Please choose one of the listed options");
                                 break;
                         }
+                        try {
+                            database.closeStatement();
+                        }
+                        catch (SQLException e) {
+                            // ignored
+                            // TODO handle?
+                        }
                     }
+                    break;
                 case "2":
                     System.out.println("Type SQL Query:");
                     String query = scan.nextLine();
@@ -177,6 +205,13 @@ public class Main {
                 default:
                     System.out.println("YEE");
                     break;
+            }
+            try {
+                database.closeStatement();
+            }
+            catch (SQLException e) {
+                // ignored
+                // TODO handle?
             }
         }
     }

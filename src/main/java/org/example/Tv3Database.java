@@ -31,15 +31,28 @@ public class Tv3Database implements Database {
     }
 
     @Override
+    public void closeStatement() throws SQLException {
+        if (statement == null) {
+            return;
+        }
+        try {
+            while (!statement.isClosed()) {
+                statement.close();
+                Thread.sleep(10);
+            }
+        }
+        catch (InterruptedException e) {
+            // ignored
+        }
+    }
+
+    @Override
     public ResultSet executeQuery(String query) throws SQLException {
         if (statement != null && !statement.isClosed()) {
             statement.close();
         }
 
         statement = connection.createStatement();
-        if (!query.endsWith(";")) {
-            query += ";";
-        }
         statement.closeOnCompletion();
         return this.statement.executeQuery(query);
     }
@@ -56,9 +69,6 @@ public class Tv3Database implements Database {
         }
 
         statement = connection.createStatement();
-        if (!sql.endsWith(";")) {
-            sql += ";";
-        }
         statement.closeOnCompletion();
         this.statement.executeUpdate(sql);
     }
@@ -69,7 +79,7 @@ public class Tv3Database implements Database {
     }
 
     protected ResultSet selectStatement(String[] whatToSelect, String from, String condition) throws SQLException {
-        String query = "SELECT " + String.join(", ", whatToSelect) + " FROM " + from + " WHERE " + condition + ";";
+        String query = "SELECT " + String.join(", ", whatToSelect) + " FROM " + from + " WHERE " + condition;
         return this.executeQuery(query);
     }
 
@@ -78,7 +88,7 @@ public class Tv3Database implements Database {
     }
 
     protected void insertStatement(String where, Queryable queryable) throws SQLException {
-        String query = "INSERT INTO " + where + " VALUES " + queryable.toQueryString() + ";";
+        String query = "INSERT INTO " + where + " VALUES " + queryable.toQueryString();
         executeUpdate(query);
     }
 
@@ -89,7 +99,7 @@ public class Tv3Database implements Database {
             whatToSet.add(temp);
         }
 
-        String query = "UPDATE " + where + " SET " + String.join(", ", whatToSet) + " WHERE " + condition + ";";
+        String query = "UPDATE " + where + " SET " + String.join(", ", whatToSet) + " WHERE " + condition;
         executeUpdate(query);
     }
 
