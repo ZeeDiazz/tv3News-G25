@@ -28,14 +28,19 @@ public class Tv3Database implements Database {
 
         // Get a connection.
         this.connection = DriverManager.getConnection(url, username, password);
-        this.statement = connection.createStatement();
     }
 
     @Override
     public ResultSet executeQuery(String query) throws SQLException {
+        if (statement != null && !statement.isClosed()) {
+            statement.close();
+        }
+
+        statement = connection.createStatement();
         if (!query.endsWith(";")) {
             query += ";";
         }
+        statement.closeOnCompletion();
         return this.statement.executeQuery(query);
     }
 
