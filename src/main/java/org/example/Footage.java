@@ -34,6 +34,6 @@ public class Footage implements Queryable {
 
     @Override
     public String toQueryString() {
-        return "(" + String.join(", ", new String[] {title, shootingDate.format(DateTimeFormatter.ofPattern("yyyyMMdd")), duration.toString(), "cpr"}) + ")";
+        return "('" + String.join("', '", new String[] {title, shootingDate.format(DateTimeFormatter.ofPattern("yyyyMMdd")), duration.toString(), "cpr"}) + "')";
     }
 }
