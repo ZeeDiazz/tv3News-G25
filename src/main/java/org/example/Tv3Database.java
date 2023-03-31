@@ -241,7 +241,7 @@ public class Tv3Database implements Database {
     public boolean updateFootage(Footage footage) {
         if (footageExists(footage)) {
             HashMap<String, String> data = new HashMap<>();
-            data.put("shootingDate", footage.getShootingDate().format(DateTimeFormatter.ofPattern("yyyyMMdd")));
+            data.put("shootingDate", footage.getShootingDate().format(DateTimeFormatter.ofPattern("yyyy-MM-dd")));
             data.put("secDuration", footage.getDuration().toString());
 
             try {
