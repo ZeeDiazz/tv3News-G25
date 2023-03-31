@@ -49,6 +49,25 @@ public class Tv3Database implements Database {
         return this.executeQuery(query);
     }
 
+    @Override
+    public void executeUpdate(String sql) throws SQLException {
+        if (statement != null && !statement.isClosed()) {
+            statement.close();
+        }
+
+        statement = connection.createStatement();
+        if (!sql.endsWith(";")) {
+            sql += ";";
+        }
+        statement.closeOnCompletion();
+        this.statement.executeUpdate(sql);
+    }
+
+    @Override
+    public void executeSanitisedUpdate(String sql) throws SQLException {
+        executeUpdate(sql);
+    }
+
     protected ResultSet selectStatement(String[] whatToSelect, String from, String condition) throws SQLException {
         String query = "SELECT " + String.join(", ", whatToSelect) + " FROM " + from + " WHERE " + condition + ";";
         return this.executeQuery(query);
@@ -60,7 +79,7 @@ public class Tv3Database implements Database {
 
     protected void insertStatement(String where, Queryable queryable) throws SQLException {
         String query = "INSERT INTO " + where + " VALUES " + queryable.toQueryString() + ";";
-        executeQuery(query);
+        executeUpdate(query);
     }
 
     protected void updateStatement(String where, HashMap<String, String> what, String condition) throws SQLException {
@@ -71,7 +90,7 @@ public class Tv3Database implements Database {
         }
 
         String query = "UPDATE " + where + " SET " + String.join(", ", whatToSet) + " WHERE " + condition + ";";
-        executeQuery(query);
+        executeUpdate(query);
     }
 
     @Override

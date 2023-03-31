@@ -9,6 +9,8 @@ public interface Database {
 
     ResultSet executeQuery(String query) throws SQLException;
     ResultSet executeSanitisedQuery(String query) throws SQLException;
+    void executeUpdate(String sql) throws SQLException;
+    void executeSanitisedUpdate(String sql) throws SQLException;
 
     boolean reporterExists(String reporterCpr);
     boolean reporterExists(Reporter reporter);
