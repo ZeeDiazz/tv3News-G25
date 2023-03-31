@@ -49,6 +49,7 @@ public class Main {
                             case "1":
                                 System.out.println("Please enter the CPR number of the new reporter:");
                                 String cprString = scan.nextLine();
+                                scan.nextLine();
 
                                 if (database.reporterExists(cprString)) {
                                     System.out.println("The CPR number you entered already exists in the database");
