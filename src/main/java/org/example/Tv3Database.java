@@ -48,9 +48,7 @@ public class Tv3Database implements Database {
 
     @Override
     public ResultSet executeQuery(String query) throws SQLException {
-        if (statement != null && !statement.isClosed()) {
-            statement.close();
-        }
+        closeStatement();
 
         statement = connection.createStatement();
         statement.closeOnCompletion();
@@ -64,9 +62,7 @@ public class Tv3Database implements Database {
 
     @Override
     public void executeUpdate(String sql) throws SQLException {
-        if (statement != null && !statement.isClosed()) {
-            statement.close();
-        }
+        closeStatement();
 
         statement = connection.createStatement();
         statement.closeOnCompletion();
