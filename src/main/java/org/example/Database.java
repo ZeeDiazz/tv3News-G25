@@ -23,6 +23,6 @@ public interface Database {
     boolean footageExists(String footageTitle);
     boolean footageExists(Footage footage);
     Footage getFootage(String footageTitle);
-    void insertFootage(Footage footage) throws EntryExistsException;
-    boolean updateFootage(Footage footage);
+    void insertFootage(Footage footage, Reporter reporter) throws EntryExistsException;
+    boolean updateFootage(Footage footage, Reporter reporter);
 }

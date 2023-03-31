@@ -221,12 +221,12 @@ public class Tv3Database implements Database {
     }
 
     @Override
-    public void insertFootage(Footage footage) throws EntryExistsException {
+    public void insertFootage(Footage footage, Reporter reporter) throws EntryExistsException {
         if (footageExists(footage)) {
             throw new EntryExistsException();
         }
         try {
-            this.insertStatement("footage", footage);
+            this.insertStatement("Footage", footage);
         }
         catch (SQLException e) {
             // TODO how to handle?
@@ -234,7 +234,7 @@ public class Tv3Database implements Database {
     }
 
     @Override
-    public boolean updateFootage(Footage footage) {
+    public boolean updateFootage(Footage footage, Reporter reporter) {
         if (footageExists(footage)) {
             HashMap<String, String> data = new HashMap<>();
             data.put("shootingDate", footage.getShootingDate().format(DateTimeFormatter.ofPattern("yyyy-MM-dd")));
@@ -250,7 +250,7 @@ public class Tv3Database implements Database {
         }
         else {
             try {
-                insertFootage(footage);
+                insertFootage(footage, reporter);
                 return true;
             }
             catch (EntryExistsException e) {
