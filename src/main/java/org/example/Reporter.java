@@ -54,6 +54,6 @@ public class Reporter implements Queryable {
 
     @Override
     public String toQueryString() {
-        return "(" + String.join(", ", new String[] {cpr.toString(), firstName, lastName, streetName, civicNumber.toString(), "city", zipCode.toString(), country, "telephoneNumber", "email"}) + ")";
+        return "(" + String.join(", ", new String[] {cpr.toString(), firstName, lastName,"telephoneNumber", "email", streetName, civicNumber.toString(), "city", zipCode.toString(), country}) + ")";
     }
 }
