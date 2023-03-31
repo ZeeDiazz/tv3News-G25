@@ -226,7 +226,8 @@ public class Tv3Database implements Database {
             throw new EntryExistsException();
         }
         try {
-            this.insertStatement("Footage", footage);
+            String query = "INSERT INTO Footage VALUES " + footage.toQueryString().replace("')", "', '") + reporter.getCPR().toString() + "')";
+            executeUpdate(query);
         }
         catch (SQLException e) {
             // TODO how to handle?
@@ -239,6 +240,7 @@ public class Tv3Database implements Database {
             HashMap<String, String> data = new HashMap<>();
             data.put("shootingDate", footage.getShootingDate().format(DateTimeFormatter.ofPattern("yyyy-MM-dd")));
             data.put("secDuration", footage.getDuration().toString());
+            data.put("reporter", reporter.getCPR().toString());
 
             try {
                 updateStatement("Footage", data, "footageTitle = " + footage.getTitle());
