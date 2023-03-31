@@ -1,6 +1,14 @@
 package org.example;
 
+import java.beans.PropertyEditorSupport;
+import java.security.KeyPair;
 import java.sql.*;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.Dictionary;
+import java.util.HashMap;
+import java.util.Map;
 
 
 public class Tv3Database implements Database {
@@ -25,8 +33,10 @@ public class Tv3Database implements Database {
 
     @Override
     public ResultSet executeQuery(String query) throws SQLException {
+        if (!query.endsWith(";")) {
+            query += ";";
+        }
         return this.statement.executeQuery(query);
-
     }
 
     @Override
@@ -34,20 +44,45 @@ public class Tv3Database implements Database {
         return this.executeQuery(query);
     }
 
+    protected ResultSet selectStatement(String[] whatToSelect, String from, String condition) throws SQLException {
+        String query = "SELECT " + String.join(", ", whatToSelect) + " FROM " + from + " WHERE " + condition + ";";
+        return this.executeQuery(query);
+    }
+
+    protected ResultSet selectStatement(String whatToSelect, String from, String condition) throws SQLException {
+        return selectStatement(new String[] {whatToSelect}, from, condition);
+    }
+
+    protected void insertStatement(String where, Queryable queryable) throws SQLException {
+        String query = "INSERT INTO " + where + " VALUES " + queryable.toQueryString() + ";";
+        executeQuery(query);
+    }
+
+    protected void updateStatement(String where, HashMap<String, String> what, String condition) throws SQLException {
+        ArrayList<String> whatToSet = new ArrayList<>();
+        for (Map.Entry<String, String> entry : what.entrySet()) {
+            String temp = entry.getKey() + " = " + entry.getValue();
+            whatToSet.add(temp);
+        }
+
+        String query = "UPDATE " + where + " SET " + String.join(", ", whatToSet) + " WHERE " + condition + ";";
+        executeQuery(query);
+    }
+
     @Override
     public boolean reporterExists(Reporter reporter) {
-        Reporter databaseReporter = getReporter(reporter.getCPR() + "");
-        if (databaseReporter == null) {
+        if (reporter == null) {
             return false;
         }
-        return databaseReporter.equals(reporter);
+
+        Reporter databaseReporter = getReporter(reporter.getCPR() + "");
+        return reporter.equals(databaseReporter);
     }
 
     @Override
     public Reporter getReporter(String cpr) {
-        String basicQuery = "Select cpr FROM Journalist WHERE cpr == " + cpr + ";";
         try {
-            ResultSet resultSet = this.executeQuery(basicQuery);
+            ResultSet resultSet = this.selectStatement("cpr", "Journalist", "cpr = " + cpr);
 
             resultSet.beforeFirst();
             if (!resultSet.next()) {
@@ -74,14 +109,32 @@ public class Tv3Database implements Database {
         if (reporterExists(reporter)) {
             throw new EntryExistsException();
         }
-        // TODO insert
+        try {
+            insertStatement("Journalist", reporter);
+        }
+        catch (SQLException e) {
+            // TODO how to handle?
+        }
     }
 
     @Override
     public boolean updateReporter(Reporter reporter) {
         if (reporterExists(reporter)) {
-            // TODO update data
-            return true;
+            HashMap<String, String> data = new HashMap<>();
+            data.put("firstName", reporter.getFirstName());
+            data.put("lastName", reporter.getLastName());
+            data.put("streetName", reporter.getStreetName());
+            data.put("civicNumber", reporter.getCivicNumber().toString());
+            data.put("zipCode", reporter.getZIPCode().toString());
+            data.put("country", reporter.getCountry());
+
+            try {
+                updateStatement("Journalist", data, "cpr = " + reporter.getCPR());
+                return true;
+            }
+            catch (SQLException e) {
+                return false;
+            }
         }
         else {
             try {
@@ -97,21 +150,73 @@ public class Tv3Database implements Database {
 
     @Override
     public boolean footageExists(Footage footage) {
-        return false;
+        if (footage == null) {
+            return false;
+        }
+
+        Footage databaseFootage = getFootage(footage.getTitle());
+        return footage.equals(databaseFootage);
     }
 
     @Override
     public Footage getFootage(String footageTitle) {
+        try {
+            ResultSet resultSet = this.selectStatement("footageTitle", "Footage", "footageTitle = " + footageTitle);
+
+            resultSet.beforeFirst();
+            if (!resultSet.next()) {
+                return null;
+            }
+
+            // Get the info of the reporter
+            LocalDate shootingDate = resultSet.getDate("shootingDate").toLocalDate();
+            int duration = resultSet.getInt("secDuration");
+            String reporterCpr = resultSet.getString("cpr");
+
+            return new Footage(footageTitle, shootingDate, duration);
+        } catch (SQLException e) {
+            // ignored
+        }
         return null;
     }
 
     @Override
     public void insertFootage(Footage footage) throws EntryExistsException {
-
+        if (footageExists(footage)) {
+            throw new EntryExistsException();
+        }
+        try {
+            this.insertStatement("footage", footage);
+        }
+        catch (SQLException e) {
+            // TODO how to handle?
+        }
     }
 
     @Override
     public boolean updateFootage(Footage footage) {
-        return false;
+        if (footageExists(footage)) {
+            HashMap<String, String> data = new HashMap<>();
+            data.put("shootingDate", footage.getShootingDate().format(DateTimeFormatter.ofPattern("yyyyMMdd")));
+            data.put("secDuration", footage.getDuration().toString());
+
+            try {
+                updateStatement("Footage", data, "footageTitle = " + footage.getTitle());
+                return true;
+            }
+            catch (SQLException e) {
+                return false;
+            }
+        }
+        else {
+            try {
+                insertFootage(footage);
+                return true;
+            }
+            catch (EntryExistsException e) {
+                // Should never happen (already checked)
+                return false;
+            }
+        }
     }
 }

@@ -17,7 +17,7 @@ public class Main {
         String username = "root";
         String password = "Mypassword01";
 
-        Database database;
+        Database database = new Tv3Database();
 
         try {
             database.login(host, port, username, password, databaseName);

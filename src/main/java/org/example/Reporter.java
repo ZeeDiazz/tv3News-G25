@@ -1,6 +1,6 @@
 package org.example;
 
-public class Reporter {
+public class Reporter implements Queryable {
 
     private final Integer cpr;
     private final String firstName;
@@ -52,4 +52,8 @@ public class Reporter {
         return getCPR() + D + getFirstName() + D + getLastName() + D + getStreetName() + D + getCivicNumber() + D + getZIPCode() + D + getCountry();
     }
 
+    @Override
+    public String toQueryString() {
+        return "(" + String.join(", ", new String[] {cpr.toString(), firstName, lastName, streetName, civicNumber.toString(), "city", zipCode.toString(), country, "telephoneNumber", "email"}) + ")";
+    }
 }
