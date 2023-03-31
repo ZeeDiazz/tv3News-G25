@@ -41,7 +41,7 @@ public class Main {
                         System.out.println("1. Reporter");
                         System.out.println("2. Footage");
 
-                        chosen = scan.next();
+                        chosen = scan.nextLine();
                         switch (chosen) {
                             case "0":
                                 inserting = false;
@@ -49,7 +49,6 @@ public class Main {
                             case "1":
                                 System.out.println("Please enter the CPR number of the new reporter:");
                                 String cprString = scan.nextLine();
-                                scan.nextLine();
 
                                 if (database.reporterExists(cprString)) {
                                     System.out.println("The CPR number you entered already exists in the database");
@@ -71,6 +70,7 @@ public class Main {
                                 int civicNumber = scan.nextInt();
                                 System.out.println("Enter the zip code of the reporter");
                                 int zipCode = scan.nextInt();
+                                scan.nextLine();
                                 System.out.println("Enter the country of the reporter");
                                 String country = scan.nextLine();
                                 Reporter reporter = new Reporter(Integer.parseInt(cprString), firstName, lastName, streetName, civicNumber, zipCode, country);
