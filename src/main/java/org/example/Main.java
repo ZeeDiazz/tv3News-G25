@@ -17,6 +17,7 @@ public class Main {
         String username = "root";
         String password = "Mypassword01";
 
+        Scanner scan = new Scanner(System.in, "CP850");
         Database database = new Tv3Database();
 
         try {
@@ -26,18 +27,94 @@ public class Main {
             // TODO
         }
 
+        while (true) {
+            System.out.println("To Insert press 1, To Query press 2, To Load File press 3");
+            int chosen = scan.nextInt();
+            scan.nextLine();
+
+            switch(chosen) {
+                case 1:
+                    // TODO make sure it handles specifically footage and reporters
+                    System.out.println("Insert values in tables:");
+                    String SQLInsertion = scan.nextLine();
+                    // statement.executeUpdate(SQLInsertion);
+                    break;
+                case 2:
+                    System.out.println("Type SQL Query:");
+                    System.out.println("");
+                    String query = scan.nextLine();
+                    ResultSet resultSet;
+                    try {
+                        resultSet = database.executeSanitisedQuery(query);
+
+                        ResultSetMetaData resultSetMetaData = resultSet.getMetaData();
+                        int columnCount = resultSetMetaData.getColumnCount();
+
+                        // Print all attribute names.
+                        // --------------------------
+                        for (int i = 1; i <= columnCount; i++) {
+                            System.out.print(resultSetMetaData.getColumnName(i)+"; ");
+                        }
+                        System.out.println();
+                        System.out.println("------");
+
+                        // Print all table rows.
+                        // ---------------------
+                        resultSet.beforeFirst(); // Set pointer for resultSet.next()
+                        while (resultSet.next()) {
+                            // Print all values in a row.
+                            // --------------------------
+                            for (int i = 1; i <= columnCount; i++) {
+                                if (resultSet.getString(i) == null) {
+                                    System.out.print("null; ");
+                                } else {
+                                    System.out.print(resultSet.getString(i)+"; ");
+                                }
+                            }
+                            System.out.println();
+                        }
+                    }
+                    catch (SQLException e) {
+                        System.out.println("Something went wrong when executing your query");
+                        continue;
+                    }
+
+                    break;
+                case 3:
+                    System.out.println("Enter filename:");
+                    String filename = scan.nextLine();
+                    if (!filename.endsWith(".csv")) {
+                        filename += ".csv";
+                    }
+                    filename = "src/main/resources/" + filename;
+                    FootagesAndReportersLoader loader = new FootagesAndReportersLoader();
+                    try {
+                        List<FootageAndReporter> footagesAndReporters = loader.loadFootagesAndReporters(filename);
+                        for (FootageAndReporter footageAndReporter : footagesAndReporters) {
+                            database.updateReporter(footageAndReporter.getReporter());
+                            database.updateFootage(footageAndReporter.getFootage());
+                        }
+                    }
+                    catch (IOException e) {
+                        // ignored
+                    }
+                    break;
+                default:
+                    System.out.println("YEE");
+                    break;
+            }
+        }
+
+        /*
         String url = "jdbc:mysql://" + host + ":" + port + "/" + databaseName + "?characterEncoding=" + cp;
         try {
             // Get a connection.
             Connection connection = DriverManager.getConnection(url, username, password);
 
-            Scanner scan = new Scanner(System.in, "CP850");
-            System.out.println("To Insert press 1, To Query press 2, To Load File press 3");
-            int Options = scan.nextInt();
-            scan.nextLine();
+
 
             Statement statement = connection.createStatement();
-            switch(Options) {
+            switch(chosen) {
                 case 1:
                     System.out.println("Insert values in tables:");
                     String SQLInsertion = scan.nextLine();
@@ -100,5 +177,6 @@ public class Main {
         }catch (Exception e) {
             e.printStackTrace();
         }
+         */
     }
 }
