@@ -12,7 +12,6 @@ public class Main {
         String host = "localhost";
         String port = "3306";
         String databaseName = "tv3NewsDB";
-        String cp = "utf8";
         // Set username and password.
         String username = "root";
         String password = "Mypassword01";
@@ -22,88 +21,102 @@ public class Main {
 
         try {
             database.login(host, port, username, password, databaseName);
-        }
-        catch (SQLException e) {
+        } catch (SQLException e) {
             // TODO
         }
 
+        String chosen;
         while (true) {
             System.out.println("To Insert press 1, To Query press 2, To Load File press 3");
-            int chosen = scan.nextInt();
+            chosen = scan.next();
             scan.nextLine();
 
-            switch(chosen) {
-                case 1:
-                    // TODO make sure it handles specifically footage and reporters
-                    System.out.println("Insert values in tables:");
-                    String SQLInsertion = scan.nextLine();
-                    // statement.executeUpdate(SQLInsertion);
-                    break;
-                case 2:
-                    System.out.println("Type SQL Query:");
-                    System.out.println("");
-                    String query = scan.nextLine();
-                    ResultSet resultSet;
-                    try {
-                        resultSet = database.executeSanitisedQuery(query);
+            if (chosen.equals("1")) {
+                // TODO make sure it handles specifically footage and reporters
+                while (true) {
+                    System.out.println("What do you want to insert?");
+                    System.out.println("1. Reporter");
+                    System.out.println("2. Footage");
 
-                        ResultSetMetaData resultSetMetaData = resultSet.getMetaData();
-                        int columnCount = resultSetMetaData.getColumnCount();
+                    chosen = scan.next();
+                    if (chosen.equals("1")) {
+                        // TODO
 
-                        // Print all attribute names.
-                        // --------------------------
-                        for (int i = 1; i <= columnCount; i++) {
-                            System.out.print(resultSetMetaData.getColumnName(i)+"; ");
+                        try {
+                            database.insertReporter(null);
+                        } catch (EntryExistsException e) {
+                            System.out.println("The CPR number you entered already exists in the database");
                         }
-                        System.out.println();
-                        System.out.println("------");
-
-                        // Print all table rows.
-                        // ---------------------
-                        resultSet.beforeFirst(); // Set pointer for resultSet.next()
-                        while (resultSet.next()) {
-                            // Print all values in a row.
-                            // --------------------------
-                            for (int i = 1; i <= columnCount; i++) {
-                                if (resultSet.getString(i) == null) {
-                                    System.out.print("null; ");
-                                } else {
-                                    System.out.print(resultSet.getString(i)+"; ");
-                                }
-                            }
-                            System.out.println();
-                        }
-                    }
-                    catch (SQLException e) {
-                        System.out.println("Something went wrong when executing your query");
+                        break;
+                    } else if (chosen.equals("2")) {
+                        // TODO
+                        break;
+                    } else {
+                        System.out.println("Please choose one of the listed options");
                         continue;
                     }
+                }
+            } else if (chosen.equals("2")) {
+                System.out.println("Type SQL Query:");
+                System.out.println("");
+                String query = scan.nextLine();
+                ResultSet resultSet;
+                try {
+                    resultSet = database.executeSanitisedQuery(query);
 
-                    break;
-                case 3:
-                    System.out.println("Enter filename:");
-                    String filename = scan.nextLine();
-                    if (!filename.endsWith(".csv")) {
-                        filename += ".csv";
+                    ResultSetMetaData resultSetMetaData = resultSet.getMetaData();
+                    int columnCount = resultSetMetaData.getColumnCount();
+
+                    // Print all attribute names.
+                    // --------------------------
+                    for (int i = 1; i <= columnCount; i++) {
+                        System.out.print(resultSetMetaData.getColumnName(i) + "; ");
                     }
-                    filename = "src/main/resources/" + filename;
-                    FootagesAndReportersLoader loader = new FootagesAndReportersLoader();
-                    try {
-                        List<FootageAndReporter> footagesAndReporters = loader.loadFootagesAndReporters(filename);
-                        for (FootageAndReporter footageAndReporter : footagesAndReporters) {
-                            database.updateReporter(footageAndReporter.getReporter());
-                            database.updateFootage(footageAndReporter.getFootage());
+                    System.out.println();
+                    System.out.println("------");
+
+                    // Print all table rows.
+                    // ---------------------
+                    resultSet.beforeFirst(); // Set pointer for resultSet.next()
+                    while (resultSet.next()) {
+                        // Print all values in a row.
+                        // --------------------------
+                        for (int i = 1; i <= columnCount; i++) {
+                            if (resultSet.getString(i) == null) {
+                                System.out.print("null; ");
+                            } else {
+                                System.out.print(resultSet.getString(i) + "; ");
+                            }
                         }
+                        System.out.println();
                     }
-                    catch (IOException e) {
-                        // ignored
+                } catch (SQLException e) {
+                    System.out.println("Something went wrong when executing your query");
+                    continue;
+                }
+            } else if (chosen.equals("3")) {
+                System.out.println("Enter filename:");
+                String filename = scan.nextLine();
+                if (!filename.endsWith(".csv")) {
+                    filename += ".csv";
+                }
+                filename = "src/main/resources/" + filename;
+                FootagesAndReportersLoader loader = new FootagesAndReportersLoader();
+                try {
+                    List<FootageAndReporter> footagesAndReporters = loader.loadFootagesAndReporters(filename);
+                    for (FootageAndReporter footageAndReporter : footagesAndReporters) {
+                        database.updateReporter(footageAndReporter.getReporter());
+                        database.updateFootage(footageAndReporter.getFootage());
                     }
-                    break;
-                default:
-                    System.out.println("YEE");
-                    break;
+                } catch (IOException e) {
+                    // ignored
+                }
+            } else {
+                System.out.println("YEE");
+                break;
             }
         }
+    }
 
         /*
         String url = "jdbc:mysql://" + host + ":" + port + "/" + databaseName + "?characterEncoding=" + cp;
@@ -178,5 +191,4 @@ public class Main {
             e.printStackTrace();
         }
          */
-    }
 }
