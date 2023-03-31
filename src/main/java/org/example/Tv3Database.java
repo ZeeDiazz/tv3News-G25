@@ -70,6 +70,11 @@ public class Tv3Database implements Database {
     }
 
     @Override
+    public boolean reporterExists(String reporterCpr) {
+        return getReporter(reporterCpr) != null;
+    }
+
+    @Override
     public boolean reporterExists(Reporter reporter) {
         if (reporter == null) {
             return false;
@@ -146,6 +151,11 @@ public class Tv3Database implements Database {
                 return false;
             }
         }
+    }
+
+    @Override
+    public boolean footageExists(String footageTitle) {
+        return getFootage(footageTitle) != null;
     }
 
     @Override
