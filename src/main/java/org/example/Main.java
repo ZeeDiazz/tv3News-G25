@@ -121,7 +121,6 @@ public class Main {
                     }
                 case "2":
                     System.out.println("Type SQL Query:");
-                    System.out.println("");
                     String query = scan.nextLine();
                     ResultSet resultSet;
                     try {
